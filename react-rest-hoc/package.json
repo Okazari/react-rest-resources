@@ -1,0 +1,21 @@
+{
+  "name": "react-rest-hoc",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "json-server": "^0.9.1",
+    "react-scripts": "0.7.0"
+  },
+  "dependencies": {
+    "react": "^15.4.1",
+    "react-dom": "^15.4.1"
+  },
+  "scripts": {
+    "start": "npm run mock-server && npm run react-start",
+    "react-start": "react-scripts start",
+    "mock-server": "json-server --watch db.json  --port 8888 db.json&",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
