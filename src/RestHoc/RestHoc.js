@@ -8,7 +8,7 @@ const RestHOC = (Component, ResourceService) => {
     constructor(props) {
       super(props)
       this.state = {}
-      const resourceId = props[`${ResourceService.singleName}Id`]
+      const resourceId = props[`${ResourceService.options.name.single}Id`]
       if (resourceId) {
         const resource = ResourceService.getById(resourceId)
         this.state = {
@@ -28,8 +28,8 @@ const RestHOC = (Component, ResourceService) => {
       const injectedProps = {
         postResource: this.postResource
       }
-      if (this.state.resource) injectedProps[ResourceService.singleName] = this.state.resource
-      if (this.state.resources) injectedProps[ResourceService.multiName] = this.state.resources
+      if (this.state.resource) injectedProps[ResourceService.options.name.single] = this.state.resource
+      if (this.state.resources) injectedProps[ResourceService.options.name.plural] = this.state.resources
       return <Component
               {...injectedProps}
               {...this.props}

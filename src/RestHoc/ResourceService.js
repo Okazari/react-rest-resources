@@ -36,9 +36,8 @@ class Resource {
 
 class ResourceService {
 
-  constructor(singleName, multiName, url) {
-    this.singleName = singleName
-    this.multiName = multiName
+  constructor(url, options) {
+    this.options = options
     this.url = url
     this.map = {}
     this.subscribers = []

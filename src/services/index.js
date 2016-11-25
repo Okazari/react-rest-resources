@@ -1,3 +1,17 @@
 import ResourceService from '../RestHoc/ResourceService'
-export const AuthorsService = new ResourceService('authors', 'author', 'http://localhost:8888/authors')
-export const BooksService = new ResourceService('books', 'book', 'http://localhost:8888/books')
+export const AuthorsService = new ResourceService('http://localhost:8888/authors',
+  {
+    name: {
+      single: 'author',
+      plural: 'authors',
+    }
+  }
+)
+export const BooksService = new ResourceService('http://localhost:8888/books',
+  {
+    name: {
+      single: 'book',
+      plural: 'books',
+    }
+  }
+)
