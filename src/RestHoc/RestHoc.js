@@ -1,13 +1,16 @@
 import React from 'react'
 
+const getDisplayName = (c) => c.displayName || c.name || 'Component'
+
 const RestHOC = (Component, ResourceService) => {
-  return class HOC extends React.Component {
+  return class extends React.Component {
+    static displayName = `RestHoc(${getDisplayName(Component)})`
     constructor(props) {
       super(props)
-      console.log(props)
       this.state = {}
-      if(this.props.resourceId){
-        const resource = ResourceService.getById(props.resourceId)
+      const resourceId = props[`${ResourceService.singleName}Id`]
+      if (resourceId) {
+        const resource = ResourceService.getById(resourceId)
         this.state = {
           resource: resource.value
         }
@@ -22,10 +25,14 @@ const RestHOC = (Component, ResourceService) => {
     }
 
     render() {
+      const injectedProps = {
+        postResource: this.postResource
+      }
+      if (this.state.resource) injectedProps[ResourceService.singleName] = this.state.resource
+      if (this.state.resources) injectedProps[ResourceService.multiName] = this.state.resources
       return <Component
-              resources={this.state.resources}
-              resource={this.state.resource}
-              postResource={this.postResource}
+              {...injectedProps}
+              {...this.props}
             />
     }
   }

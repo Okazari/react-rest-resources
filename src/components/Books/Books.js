@@ -1,12 +1,12 @@
 import React from 'react'
 import Book from './Book'
 
-const Books = ({ resources }) => {
-  console.log(resources)
-  if(!resources) return null
+const Books = ({ books }) => {
+  console.log(books)
+  if(!books) return null
   return (
     <div>
-      {resources.map(authorId => <Book key={authorId} resourceId={authorId} />)}
+      {books.map(bookId => <Book key={bookId} bookId={bookId} />)}
     </div>
   )
 }

@@ -1,10 +1,10 @@
 import React from 'react'
-const Book = ({ resource }) => {
-  console.log(resource)
-  if(!resource) return null
+const Book = ({ book }) => {
+  console.log(book)
+  if(!book) return null
   return (
     <div>
-      {resource.title}
+      {book.title}
     </div>
   )
 }

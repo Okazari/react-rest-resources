@@ -1,12 +1,12 @@
 import React from 'react'
 import Author from './Author'
 
-const Authors = ({ resources }) => {
-  console.log(resources)
-  if(!resources) return null
+const Authors = ({ authors }) => {
+  console.log(authors)
+  if(!authors) return null
   return (
     <div>
-      {resources.map(authorId => <Author key={authorId} resourceId={authorId} />)}
+      {authors.map(authorId => <Author key={authorId} authorId={authorId} />)}
     </div>
   )
 }

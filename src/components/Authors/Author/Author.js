@@ -1,10 +1,10 @@
 import React from 'react'
-const Authors = ({ resource }) => {
-  console.log(resource)
-  if(!resource) return null
+const Authors = ({ author }) => {
+  console.log(author)
+  if(!author) return null
   return (
     <div>
-      {resource.name}
+      {author.name}
     </div>
   )
 }
