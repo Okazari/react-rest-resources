@@ -2,9 +2,9 @@
 
 ## Why ?
 
-As i used `redux` along with `react` on a project, we decided to store data in an `api` reducer. We had to makes some asynchronous actions using `rdux-thunk`.
-After some time i definitly felt not comfortable with this way of storing api data. 
-I wanted to find another way to store my API data and  keep my redux store for one single use : Store my application state.
+As i used `redux` along with `react` on a project, we decided to store data in an `api` reducer. We had to makes some asynchronous actions using `redux-thunk`.
+After some time I definitly felt not comfortable with this way of storing api data. 
+I wanted to find another way to store my API data and keep my redux store for one single use : Store my application state.
 
 I assisted to a conference about reactive programming and i choosed to try something about observables resources.
 
@@ -84,7 +84,7 @@ In the example :
 ```js
 const Component = ({ author }) => {
   <div>
-    {authors.name}
+    {author.name}
   </div>
 }
 ```
