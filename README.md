@@ -64,7 +64,7 @@ const AuthorsFinalComponent = RestHoc(Component, AuthorsService)
 ```
 Use the resulting component to get a list of resource id or your plain resource
 ```js
-  //This will inject an array of id into a props use the plural name you defined
+  //This will inject an array of id into a props using the plural name you defined
   <AuthorsFinalComponent />
   // => In your component you will get a props authors = [1,2,3,4]
 
