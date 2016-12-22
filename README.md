@@ -51,8 +51,7 @@ export const AuthorsService = new ResourceService('http://localhost:8888/authors
 //The component you want to connect
 import Component from './Component'
 //Import the library HOC
-import { RestHoc } from 'react-rest-resource'
-import ResourceService from 'MyResourceService'
+import { RestHoc, ResourceService} from 'react-rest-resource'
 const AuthorsService = new ResourceService('http://localhost:8888/authors',
   {
     name: {
