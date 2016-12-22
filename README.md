@@ -52,7 +52,7 @@ export const AuthorsService = new ResourceService('http://localhost:8888/authors
 import Component from './Component'
 //Import the library HOC
 import { RestHoc } from 'react-rest-resource'
-import RessourceService from 'MyResourceService'
+import ResourceService from 'MyResourceService'
 const AuthorsService = new ResourceService('http://localhost:8888/authors',
   {
     name: {
@@ -82,4 +82,4 @@ In both usage, the RestHOC will also inject 3 methods in your props to manipulat
   deleteResource(resourceId)
 ```
 
-Theses methods will update/create/delete your data and update every component binded to your RessourceService with the RestHoc 
+Theses methods will update/create/delete your data and update every component binded to your ResourceService with the RestHoc 
