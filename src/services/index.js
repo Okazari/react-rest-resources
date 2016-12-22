@@ -1,4 +1,4 @@
-import ResourceService from '../RestHoc/ResourceService'
+import { ResourceService } from '../ReactRest'
 export const AuthorsService = new ResourceService('http://localhost:8888/authors',
   {
     name: {

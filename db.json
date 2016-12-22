@@ -3,12 +3,11 @@
     {
       "title": "zefzefzefzef",
       "id": 1
+    },
+    {
+      "title": "gregreregger",
+      "id": 2
     }
   ],
-  "authors": [
-    {
-      "name": "zefzefzefzef",
-      "id": 1
-    }
-  ]
+  "authors": []
 }
