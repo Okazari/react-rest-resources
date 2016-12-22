@@ -1,6 +1,6 @@
 {
-  "main.css": "react-rest-resources/static/css/main.3ca1072e.css",
-  "main.css.map": "react-rest-resources/static/css/main.3ca1072e.css.map",
-  "main.js": "react-rest-resources/static/js/main.5bb5736f.js",
-  "main.js.map": "react-rest-resources/static/js/main.5bb5736f.js.map"
+  "main.css": "static/css/main.3ca1072e.css",
+  "main.css.map": "static/css/main.3ca1072e.css.map",
+  "main.js": "static/js/main.5bb5736f.js",
+  "main.js.map": "static/js/main.5bb5736f.js.map"
 }
