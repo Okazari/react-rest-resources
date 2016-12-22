@@ -1,25 +1,14 @@
 {
-  "books": [{
-    "id":1,
-    "authorId": 1,
-    "title": "Toto dans la forêt",
-    "content": "C'est l'histoire de toto..."
-  },{
-    "id":2,
-    "authorId": 1,
-    "title": "Titi dans la forêt",
-    "content": "C'est l'histoire de toto et titi..."
-  },{
-    "id":3,
-    "authorId": 2,
-    "title": "Pompom tralala",
-    "content": "Here we go"
-  }],
-  "authors": [{
-    "id": 1,
-    "name":"Alain Chabat"
-  },{
-    "id": 2,
-    "name":"Mouah hahaha"
-  }]
+  "books": [
+    {
+      "title": "zefzefzefzef",
+      "id": 1
+    }
+  ],
+  "authors": [
+    {
+      "name": "zefzefzefzef",
+      "id": 1
+    }
+  ]
 }

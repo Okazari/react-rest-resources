@@ -24,9 +24,23 @@ const RestHOC = (Component, ResourceService) => {
       }
     }
 
+    postResource(newResource) {
+      ResourceService.postResource(newResource)
+    }
+    
+    updateResource(updatedResource) {
+      ResourceService.updateResource(updatedResource)
+    }
+    
+    deleteResource(resourceId) {
+      ResourceService.deleteResource(resourceId)
+    }
+
     render() {
       const injectedProps = {
-        postResource: this.postResource
+        postResource: this.postResource,
+        updateResource: this.updateResource,
+        deleteResource: this.deleteResource,
       }
       if (this.state.resource) injectedProps[ResourceService.options.name.single] = this.state.resource
       if (this.state.resources) injectedProps[ResourceService.options.name.plural] = this.state.resources

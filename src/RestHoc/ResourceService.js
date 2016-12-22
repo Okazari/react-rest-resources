@@ -1,3 +1,7 @@
+const headers = {
+  'Content-Type': 'application/json',
+}
+
 class Resource {
   constructor(url, initialValue) {
     this.subscribers = []
@@ -19,16 +23,20 @@ class Resource {
   }
 
   update() {
-    fetch(this.url)
+    return fetch(this.url)
       .then(response => response.json())
       .then(resource => this.setResource(resource))
   }
 
-  post(resource) {
-    console.log(resource)
-    fetch(this.url, {method: 'PATCH', body: JSON.stringify(resource)})
+  put(resource) {
+    return fetch(this.url, {method: 'PUT', headers, body: JSON.stringify(resource)})
       .then(response => response.json())
       .then(() => this.setResource(resource))
+  }
+
+  delete() {
+    return fetch(this.url, {method: 'DELETE', headers})
+      .then(response => response.json())
   }
 }
 
@@ -48,6 +56,10 @@ class ResourceService {
     this.subscribers.push(subscriber)
   }
 
+  notify() {
+    this.subscribers.map(subscriber => subscriber.next(this.map))
+  }
+
   update() {
     fetch(this.url)
     .then(response => response.json())
@@ -57,7 +69,7 @@ class ResourceService {
           if(!this.map[resource.id]) this.map[resource.id] = new Resource(`${this.url}/${resource.id}`, resource)
         }
       )
-      this.subscribers.map(subscriber => subscriber.next(this.map))
+      this.notify()
     })
   }
 
@@ -67,7 +79,27 @@ class ResourceService {
   }
 
   postResource(resource) {
-    this.map[resource.id].post(resource)
+    fetch(this.url, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify(resource)
+    })
+    .then(response => response.json())
+    .then(data => {
+      this.map[data.id] = new Resource(`${this.url}/${data.id}`, {...resource, id: data.id})
+      this.notify()
+    })
+  }
+
+  updateResource(resource) {
+    this.getById(resource.id).put(resource)
+  }
+
+  deleteResource(resourceId) {
+    this.getById(resourceId).delete().then(() => {
+      delete this.map[resourceId]
+      this.notify()
+    })
   }
 
 }

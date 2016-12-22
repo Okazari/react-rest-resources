@@ -1,0 +1,40 @@
+.app {
+  display: flex;
+font-family: 'Roboto', sans-serif;
+}
+
+.container {
+  border: 1px solid #605293;
+  border-radius: 3px;
+  padding: 20px;
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  display:flex;
+  border: 1px solid #877CB0;
+  justify-content: space-between;
+  margin: 5px 0;
+}
+
+.itemName {
+  padding: 10px;
+  min-width: 200px;
+  flex-grow: 1;
+}
+
+.actionList {
+  display:flex;
+}
+
+.actionButton {
+  background-color: white;
+  border: none;
+}
+
+.actionButton:hover {
+  cursor: pointer;
+  background-color: #CCC;
+}

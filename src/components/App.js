@@ -1,24 +1,12 @@
 import React from 'react'
 import Authors from './Authors'
 import Books from './Books'
-
+import styles from './styles.css'
 const App = () => {
   return (
-    <div className="App">
+    <div className="app">
       <Authors />
       <Books />
-        <Authors />
-        <Books />
-          <Authors />
-          <Books />
-            <Authors />
-            <Books />
-              <Authors />
-              <Books />
-                <Authors />
-                <Books />
-                  <Authors />
-                  <Books />
     </div>
   )
 }
