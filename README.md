@@ -10,6 +10,12 @@ I assisted to a conference about reactive programming and i choosed to try somet
 
 Here it is !
 
+## Features
+
+  - Optimize your HTTP requests : Get only the data you need.
+  - Optimize your renders : Only react components that really need to refresh will do
+  - Don't worry about async, your component will update as soon as the data is there.
+
 ## Usage
 
 ### First step : Create a Resource Service for your rest endpoint
@@ -39,7 +45,7 @@ export const AuthorsService = new ResourceService('http://localhost:8888/authors
 )
 ```
 
-### Second step : Use the provided Hoc to connect your components to your services
+### Second step : Use the provided Hoc to get your resources injected as props in your component
 
 ```js
 //The component you want to connect
@@ -57,34 +63,23 @@ const AuthorsService = new ResourceService('http://localhost:8888/authors',
 )
 const AuthorsFinalComponent = RestHoc(Component, AuthorsService)
 ```
-
-#### Usage for a collection of resource id
-
-Usage of the resulting component
-```html
+Usage it to get a list of id or your plain resource
+```js
+  //This will inject an array of id into a props use the plural name you defined
   <AuthorsFinalComponent />
-```
-This will inject an array of id using the `plural` name you defined.
-In the example :
-```js
-const Component = ({ authors }) => {
-  <div>
-    {authors.map(authorId => authorId)}}
-  </div>
-}
+  // => In your component you will get a props authors = [1,2,3,4]
+
+  //If you provide a props using your single name + Id, it will inject the plain resource object using the single name you defined
+  <AuthorsFinalComponent autorId={1} />
+  // => In your component you will get a props author = {id: 1, name:"Toto", ...} 
 ```
 
-#### Usage for a plain resource
-This time you have to add a props - using the single name you defined in your service followed by Id - (this internaly do something like `name.single + 'Id'` to find the props)
-```html
-  <AuthorsFinalComponent authorId="2" />
-```
-This will inject your resource using the `single` name you defined.
-In the example :
+In both usage, the RestHOC will also inject 3 methods in your props to manipulate your data :
+
 ```js
-const Component = ({ author }) => {
-  <div>
-    {author.name}
-  </div>
-}
+  postResource(newResource)
+  updateResource(updatedResource)
+  deleteResource(resourceId)
 ```
+
+Theses methods will update/create/delete your data and update every component binded to your RessourceService with the RestHoc 
