@@ -2,7 +2,7 @@ const headers = {
   'Content-Type': 'application/json',
 }
 
-const debug = true
+const debug = false
 
 const info = (...log) => {
   if(debug) console.info(...log)
@@ -84,7 +84,6 @@ class ResourceService {
     this.handleResponse = handleResponse.bind(this)
     this.map = {}
     this.observableMap = {}
-    this.lock = false
   }
 
   subscribe(subscriber, query) {
