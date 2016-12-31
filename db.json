@@ -1,13 +1,4 @@
 {
-  "books": [
-    {
-      "title": "zefzefzefzef",
-      "id": 1
-    },
-    {
-      "title": "gregreregger",
-      "id": 2
-    }
-  ],
+  "books": [],
   "authors": []
 }

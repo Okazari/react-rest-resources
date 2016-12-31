@@ -6,6 +6,8 @@ const App = () => {
   return (
     <div className="app">
       <Authors />
+      <Authors />
+      <Books />
       <Books />
     </div>
   )

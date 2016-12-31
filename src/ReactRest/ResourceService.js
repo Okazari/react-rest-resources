@@ -2,10 +2,26 @@ const headers = {
   'Content-Type': 'application/json',
 }
 
+const debug = true
+
+const info = (...log) => {
+  if(debug) console.info(...log)
+}
+
+const handleResponse = response => {
+  if (response.status >= 400) {
+    const error = { status: response.status }
+    throw error
+  }
+  return response.json()
+}
+
 class Resource {
-  constructor(url, initialValue) {
+  constructor(url, initialValue, fetch) {
+    this.fetch = fetch
     this.subscribers = []
     this.url = url
+    this.handleResponse = handleResponse.bind(this)
     if(!!initialValue) {
       this.value = initialValue
     } else {
@@ -17,26 +33,43 @@ class Resource {
     this.subscribers.push(subscriber)
   }
 
+  unsubscribe(subscriber) {
+    const subscriberIndex = this.subscribers.indexOf(subscriber)
+    this.subscribers = this.subscribers.splice(subscriberIndex + 1, 1)
+  }
+
+  notify() {
+    this.subscribers.forEach(subscriber => subscriber.next(this.value))
+  }
+
   setResource(resource) {
     this.value = resource
-    this.subscribers.forEach(subscriber => subscriber.next(resource))
+    this.notify()
+  }
+  
+  notifyError(error) {
+    this.subscribers.map(subscriber => subscriber.error(error))
+    return {}
   }
 
   update() {
-    return fetch(this.url)
-      .then(response => response.json())
+    return this.fetch(this.url, { headers })
+      .then(this.handleResponse)
+      .catch(error => this.notifyError(error))
       .then(resource => this.setResource(resource))
   }
 
   put(resource) {
-    return fetch(this.url, {method: 'PUT', headers, body: JSON.stringify(resource)})
-      .then(response => response.json())
+    return this.fetch(this.url, {method: 'PUT', headers, body: JSON.stringify(resource)})
+      .then(this.handleResponse)
+      .catch(error => this.notifyError(error))
       .then(() => this.setResource(resource))
   }
 
   delete() {
-    return fetch(this.url, {method: 'DELETE', headers})
-      .then(response => response.json())
+    return this.fetch(this.url, {method: 'DELETE', headers})
+      .then(this.handleResponse)
+      .catch(error => this.notifyError(error))
   }
 }
 
@@ -45,63 +78,122 @@ class Resource {
 class ResourceService {
 
   constructor(url, options) {
+    this.fetch = options.proxy ? options.proxy : (...params) => fetch(...params)
     this.options = options
     this.url = url
+    this.handleResponse = handleResponse.bind(this)
     this.map = {}
-    this.subscribers = []
-    this.update()
+    this.observableMap = {}
+    this.lock = false
   }
 
-  subscribe(subscriber) {
-    this.subscribers.push(subscriber)
+  subscribe(subscriber, query) {
+    const queryKey = this.getQueryParamsKey(query)
+    info('Subscribing to', queryKey)
+    this.checkInitObservable(queryKey, query)
+    if(!this.observableMap[queryKey].lock) {
+      this.observableMap[queryKey].lock = true
+      this.update(query).then(data => {
+        this.observableMap[queryKey].lock = false
+        return data
+      })
+    }
+    this.notify(queryKey)
+    this.observableMap[queryKey].subscribers.push(subscriber)
   }
 
-  notify() {
-    this.subscribers.map(subscriber => subscriber.next(this.map))
+  unsubscribe(subscriber, query) {
+    const queryKey = this.getQueryParamsKey(query)
+    info('Unsubscribing to', queryKey)
+    const subscriberIndex = this.observableMap[queryKey].subscribers.indexOf(subscriber)
+    this.observableMap[queryKey].subscribers = this.observableMap[queryKey].subscribers.splice(subscriberIndex + 1, 1)
   }
 
-  update() {
-    fetch(this.url)
-    .then(response => response.json())
+  notify(queryParams) {
+    const { subscribers, value } = this.observableMap[queryParams]
+    subscribers.map(subscriber => subscriber.next(value))
+  }
+
+  notifyError(queryParams, error) {
+    this.observableMap[queryParams].subscribers.map(subscriber => subscriber.error(error))
+    return []
+  }
+
+  checkInitObservable(queryKey, query) {
+    if (!this.observableMap[queryKey]) {
+      info('Initialize', queryKey)
+      this.observableMap[queryKey] = {
+        value: [],
+        subscribers: [],
+        query,
+      }
+    }
+  }
+
+  getQueryParamsKey(query = {}) {
+    return Object.keys(query).sort().reduce((previous, key) => {
+      return `${ previous }${ previous === '' ? '' : '&' }${ key }=${ query[key] }`
+    }, '')
+  }
+
+  update(query = {}) {
+    const queryParams = this.getQueryParamsKey(query)
+    const urlToCall = `${this.url}${queryParams ? '?' : ''}${queryParams}`
+    return this.fetch(urlToCall, { headers })
+    .then(this.handleResponse)
+    .catch(error => this.notifyError(error))
     .then(resources => {
-      resources.forEach(
+      info('Updating', queryParams, resources)
+      this.observableMap[queryParams].value = resources.map(
         (resource) => {
-          if(!this.map[resource.id]) this.map[resource.id] = new Resource(`${this.url}/${resource.id}`, resource)
+          const resourceId = resource[this.options.name.id || 'id']
+          if(!this.map[resourceId]) this.map[resourceId] = new Resource(`${this.url}/${resourceId}`, resource, this.fetch)
+          return resourceId
         }
       )
-      this.notify()
+      this.notify(queryParams)
     })
   }
 
   getById(id) {
-    if (!this.map[id]) this.map[id] = new Resource(`${this.url}/${id}`)
+    if (!this.map[id]) this.map[id] = new Resource(`${this.url}/${id}`, null, this.fetch)
     return this.map[id]
-  }
+  } 
 
   postResource(resource) {
-    fetch(this.url, {
+    this.fetch(this.url, {
       method: 'POST',
       headers,
       body: JSON.stringify(resource)
     })
-    .then(response => response.json())
+    .then(handleResponse)
+    .catch(error => this.notifyError(error))
     .then(data => {
-      this.map[data.id] = new Resource(`${this.url}/${data.id}`, {...resource, id: data.id})
-      this.notify()
+      this.map[data.id] = new Resource(`${this.url}/${data.id}`, {...resource, id: data.id}, this.fetch)
+      Object.keys(this.observableMap).forEach(key => this.update(this.observableMap[key].query)) 
     })
   }
 
   updateResource(resource) {
-    this.getById(resource.id).put(resource)
-  }
+    const resourceId = resource[this.options.name.id || 'id']
+    this.getById(resourceId).put(resource)
+    Object.keys(this.observableMap).forEach(
+      key => this.observableMap[key].value.includes(resourceId) && this.update(this.observableMap[key].query)
+    )}
 
   deleteResource(resourceId) {
     this.getById(resourceId).delete().then(() => {
       delete this.map[resourceId]
-      this.notify()
+      Object.keys(this.observableMap).forEach(
+        key => {
+          if (this.observableMap[key].value.includes(resourceId)){
+            delete this.observableMap[key].value[resourceId]
+            this.update(this.observableMap[key].query)
+          }
+        }
+      )
     })
   }
-
 }
 
 export default ResourceService
