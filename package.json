@@ -1,12 +1,23 @@
 {
   "name": "react-rest-resource",
   "version": "0.1.0",
-  "private": true,
+  "main": "lib/index.js",
   "devDependencies": {
+    "babel-cli": "^6.24.1",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-preset-es2015-rollup": "^3.0.0",
+    "babel-preset-react": "^6.24.1",
+    "concurrently": "^3.4.0",
     "json-server": "^0.9.6",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
-    "react-scripts": "1.0.7"
+    "react-scripts": "1.0.7",
+    "rollup": "^0.42.0",
+    "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-uglify": "^2.0.1"
   },
   "peerDependencies": {
     "react": "^15.4.1",
@@ -16,11 +27,26 @@
     "start": "concurrently -k -p name -n \"server,front\" \"npm run mock-server\" \"npm run react-start\"",
     "react-start": "react-scripts start",
     "mock-server": "json-server --watch db.json  --port 8888 db.json&",
-    "build": "react-scripts build",
+    "build": "rollup -c ./rollup.config.js",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
-  "dependencies": {
-    "concurrently": "^3.4.0"
-  }
+  "babel": {
+    "presets": [
+      "react",
+      "es2015-rollup"
+    ],
+    "plugins": [
+      "transform-class-properties",
+      "transform-object-rest-spread"
+    ],
+    "env": {
+      "test": {
+        "plugins": [
+          "transform-es2015-modules-commonjs"
+        ]
+      }
+    }
+  },
+  "dependencies": {}
 }
